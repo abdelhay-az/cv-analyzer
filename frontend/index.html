@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cvchekeraz — CV Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- NOISE OVERLAY -->
+    <div class="noise-overlay"></div>
+
+    <!-- HERO / UPLOAD SECTION -->
+    <section class="hero" id="upload-section">
+      <div class="hero-grid-lines"></div>
+
+      <header class="site-header">
+        <div class="header-spacer"></div>
+        <div class="brand-logo" aria-label="cvchekeraz logo">
+          <img src="logo.png" alt="cvchekeraz logo" class="logo-img" />
+          <span class="brand-name">Cv Checker Az</span>
+        </div>
+        <button
+          type="button"
+          class="theme-toggle"
+          id="theme-toggle"
+          aria-label="Change theme"
+        >
+          🌙 Theme
+        </button>
+      </header>
+
+      <div class="hero-content">
+        <h1 class="hero-title">
+          Find the right career<br />
+          <em>match for your CV</em>
+        </h1>
+        <p class="hero-subtitle">
+          Upload your CV and let our AI engine match you against thousands of
+          job profiles — revealing strengths, gaps, and your exact fit score.
+        </p>
+
+        <!-- UPLOAD CARD -->
+        <div class="upload-card" id="upload-card">
+          <form id="cv-form" novalidate>
+            <!-- Drop Zone -->
+            <div class="drop-zone" id="drop-zone">
+              <div class="drop-icon">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  <path
+                    d="M20 4L20 26M20 4L13 11M20 4L27 11"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M6 28V32C6 34.2 7.8 36 10 36H30C32.2 36 34 34.2 34 32V28"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+              <div class="drop-text">
+                <span class="drop-main">Drop your CV here</span>
+                <span class="drop-sub"
+                  >or
+                  <label for="file-input" class="file-label"
+                    >browse files</label
+                  ></span
+                >
+              </div>
+              <input
+                type="file"
+                id="file-input"
+                name="file"
+                accept=".pdf,.docx,.doc,.txt"
+                hidden
+              />
+              <div class="file-types">PDF · DOCX · DOC · TXT</div>
+            </div>
+
+            <!-- File Selected Display -->
+            <div class="file-selected" id="file-selected" style="display: none">
+              <div class="file-icon">📄</div>
+              <div class="file-info">
+                <span class="file-name" id="file-name-display"></span>
+                <span class="file-size" id="file-size-display"></span>
+              </div>
+              <button type="button" class="file-remove" id="file-remove">
+                ✕
+              </button>
+            </div>
+
+            <!-- Options Row -->
+            <div class="options-row">
+              <div class="option-group">
+                <label class="option-label" for="top-k">
+                  <span class="label-icon">◈</span>
+                  Job matches to retrieve
+                </label>
+                <div class="number-input-wrap">
+                  <button type="button" class="num-btn" id="top-k-minus">
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    id="top-k"
+                    name="top_k"
+                    value="5"
+                    min="1"
+                    max="20"
+                    class="num-input"
+                    readonly
+                  />
+                  <button type="button" class="num-btn" id="top-k-plus">
+                    +
+                  </button>
+                </div>
+                <span class="option-hint"
+                  >Best matching career profiles</span
+                >
+              </div>
+
+              <input
+                type="hidden"
+                id="threshold"
+                name="threshold"
+                value="0.30"
+              />
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="analyze-btn" id="analyze-btn" disabled>
+              <span class="btn-text">Analyze My CV</span>
+              <span class="btn-arrow">→</span>
+            </button>
+
+            <!-- Error -->
+            <div class="form-error" id="form-error" style="display: none"></div>
+          </form>
+        </div>
+
+        <!-- Stats row -->
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-num">10+</span>
+            <span class="stat-label">Score dimensions</span>
+          </div>
+          <div class="stat-sep">·</div>
+          <div class="stat-item">
+            <span class="stat-num">Multi-lang</span>
+            <span class="stat-label">CV support</span>
+          </div>
+          <div class="stat-sep">·</div>
+          <div class="stat-item">
+            <span class="stat-num">AI</span>
+            <span class="stat-label">Semantic matching</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOADING OVERLAY -->
+    <div class="loading-overlay" id="loading-overlay" style="display: none">
+      <div class="loading-inner">
+        <div class="loading-ring">
+          <div class="ring-segment"></div>
+          <div class="ring-segment"></div>
+          <div class="ring-segment"></div>
+        </div>
+        <p class="loading-title">Analyzing your CV</p>
+        <p class="loading-sub" id="loading-sub">
+          Extracting text and detecting language…
+        </p>
+        <div class="loading-progress">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS SECTION -->
+    <section class="results-section" id="results-section" style="display: none">
+      <!-- Results Header -->
+      <div class="results-header">
+        <div class="results-header-inner">
+          <button class="back-btn" id="back-btn">← New</button>
+
+          <div class="brand-logo results-logo" aria-label="cvchekeraz logo">
+            <img src="logo.png" alt="cvchekeraz logo" class="logo-img" />
+            <span class="brand-name">Cv Checker Az</span>
+          </div>
+
+          <div class="results-actions">
+            <button
+              type="button"
+              class="theme-toggle"
+              id="theme-toggle-results"
+            >
+              🌙 Theme
+            </button>
+            <div class="results-meta" id="results-meta"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-body">
+        <!-- LEFT COLUMN -->
+        <aside class="results-sidebar">
+          <!-- Best Job Card -->
+          <div class="card card--hero" id="card-best-job">
+            <div class="card-label">Best Match</div>
+            <h2 class="best-job-title" id="best-job-title">—</h2>
+            <div class="best-job-sim" id="best-job-sim"></div>
+            <div class="best-job-desc" id="best-job-desc"></div>
+          </div>
+
+          <!-- Score Gauge Card -->
+          <div class="card card--score">
+            <div class="card-label">Match Score</div>
+            <div class="gauge-wrap gauge-circle-wrap">
+              <svg
+                class="gauge-svg gauge-circle"
+                viewBox="0 0 160 160"
+                width="160"
+                height="160"
+              >
+                <circle
+                  cx="80"
+                  cy="80"
+                  r="64"
+                  fill="none"
+                  stroke="var(--track)"
+                  stroke-width="14"
+                />
+                <circle
+                  id="gauge-arc"
+                  cx="80"
+                  cy="80"
+                  r="64"
+                  fill="none"
+                  stroke="var(--accent)"
+                  stroke-width="14"
+                  stroke-linecap="round"
+                  stroke-dasharray="402"
+                  stroke-dashoffset="402"
+                  transform="rotate(-90 80 80)"
+                />
+              </svg>
+              <div class="gauge-value">
+                <span class="gauge-num" id="gauge-num">0</span>
+                <span class="gauge-den">/100</span>
+              </div>
+            </div>
+            <div class="score-label-badge" id="score-label-badge">—</div>
+            <div class="score-grid">
+              <div class="score-cell">
+                <span class="sc-label">Out of 10</span>
+                <span class="sc-val" id="sc-out-of-10">—</span>
+              </div>
+              <div class="score-cell">
+                <span class="sc-label">Requirements</span>
+                <span class="sc-val" id="sc-requirements">—</span>
+              </div>
+              <div class="score-cell">
+                <span class="sc-label">Tools</span>
+                <span class="sc-val" id="sc-tools">—</span>
+              </div>
+              <div class="score-cell">
+                <span class="sc-label">Semantic Sim.</span>
+                <span class="sc-val" id="sc-occupation">—</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Language Tag -->
+          <div class="card card--lang" id="lang-card" style="display: none">
+            <div class="card-label">Language</div>
+            <div class="lang-info" id="lang-info"></div>
+          </div>
+        </aside>
+
+        <!-- RIGHT COLUMN -->
+        <main class="results-main">
+          <!-- Summary + Explanation -->
+          <div class="card card--summary">
+            <div class="card-label">Summary</div>
+            <p class="summary-text" id="summary-text"></p>
+            <div class="score-explanation" id="score-explanation"></div>
+          </div>
+
+          <!-- Detected Jobs -->
+          <div class="card">
+            <div class="card-header-row">
+              <div class="card-label">Detected Jobs</div>
+              <span class="card-count" id="detected-jobs-count"></span>
+            </div>
+            <div class="detected-jobs-list" id="detected-jobs-list"></div>
+          </div>
+
+          <!-- Strengths + Improvements 2-col -->
+          <div class="two-col-cards">
+            <div class="card card--strengths">
+              <div class="card-label">Top Strengths</div>
+              <div class="strengths-list" id="strengths-list"></div>
+            </div>
+
+            <div class="card card--improvements">
+              <div class="card-label">Priority Improvements</div>
+              <div class="improvements-list" id="improvements-list"></div>
+            </div>
+          </div>
+
+          <!-- Technologies Found -->
+          <div class="card">
+            <div class="card-label">Technologies Found</div>
+            <div class="tech-chips" id="tech-chips"></div>
+          </div>
+
+          <!-- Recommended Tools -->
+          <div class="card">
+            <div class="card-label">Recommended Tools to Learn</div>
+            <div class="tools-list" id="tools-list"></div>
+          </div>
+
+          <!-- Action Plan -->
+          <div class="card card--action">
+            <div class="card-label">Action Plan</div>
+            <div class="action-list" id="action-list"></div>
+          </div>
+        </main>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div>
+          <strong>About us</strong>
+          <p>
+            cvcheckeraz helps students and job seekers understand their CV,
+            discover suitable job matches, and improve their profile step by
+            step.
+          </p>
+        </div>
+        <div>
+          <strong>Support</strong>
+          <p>
+            Make your CV better, clearer, and closer to the career you want.
+          </p>
+          <a href="mailto:azcv-helper@gmail.com">cvcheckeraz@gmail.com</a>
+        </div>
+        <div class="copyright">© 2026 cvcheckeraz. All rights reserved.</div>
+      </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
