@@ -3,7 +3,7 @@
    Connects to local FastAPI at http://localhost:8000
    ============================================ */
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = 'https://cv-analyzer-production-a682.up.railway.app';
 
 // ─── DOM REFS ────────────────────────────────
 const form           = document.getElementById('cv-form');
