@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+python-multipart
+pandas
+numpy
+scikit-learn
+sentence-transformers
+pdfplumber
+python-docx
+langdetect
+deep-translator
+rapidfuzz
