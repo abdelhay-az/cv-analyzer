@@ -343,7 +343,7 @@ def detect_jobs_from_cv(cv_text, top_k=5):
 # 7) Weighted requirements matching
 # ============================================================
 
-def semantic_weighted_match_score(cv_text, job_row, model, threshold=0.30):
+def semantic_weighted_match_score(cv_text, job_row, model, threshold=0.20,threshold2=0.30):
     skills = clean_list_string(job_row.get("skills_Element Name", ""))
     skill_weights = clean_list_string(job_row.get("skills_Data Value", ""))
 
@@ -418,6 +418,7 @@ def semantic_weighted_match_score(cv_text, job_row, model, threshold=0.30):
 
         if sim >= threshold:
             matched_weight += weight
+        if sim >= threshold2:
             found.append(result_item)
         else:
             missing.append(result_item)
@@ -530,7 +531,7 @@ def generate_specific_suggestions(job_title, missing_requirements, missing_tech_
 # 10) Main analyzer
 # ============================================================
 
-def analyze_cv_against_best_job(cv_text, top_k=5, threshold=0.30, debug=False):
+def analyze_cv_against_best_job(cv_text, top_k=5, threshold=0.20, threshold2=0.30, debug=False):
     detected_jobs = detect_jobs_from_cv(cv_text, top_k=top_k)
 
     best_job = detected_jobs[0]
@@ -541,7 +542,8 @@ def analyze_cv_against_best_job(cv_text, top_k=5, threshold=0.30, debug=False):
         cv_text=cv_text,
         job_row=job_row,
         model=model,
-        threshold=threshold
+        threshold=threshold,
+        threshold2=threshold2
     )
 
     tech_result = tech_tools_score(cv_text, job_row)
