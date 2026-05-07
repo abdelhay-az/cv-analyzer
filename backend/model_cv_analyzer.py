@@ -541,9 +541,7 @@ def analyze_cv_against_best_job(cv_text, top_k=5, threshold=0.20, threshold2=0.3
     weighted_result = semantic_weighted_match_score(
         cv_text=cv_text,
         job_row=job_row,
-        model=model,
-        threshold=threshold,
-        threshold2=threshold2
+        model=model
     )
 
     tech_result = tech_tools_score(cv_text, job_row)
