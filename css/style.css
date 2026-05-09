@@ -91,27 +91,7 @@ body {
   inset: 0;
   background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(123,97,255,0.12) 0%, transparent 70%);
 }
-.cursor {
-  width: 12px; height: 12px;
-  background: var(--gold);
-  border-radius: 50%;
-  position: fixed; top: 0; left: 0;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: transform 0.1s var(--ease), width 0.3s var(--ease), height 0.3s var(--ease), background 0.3s;
-  mix-blend-mode: screen;
-}
-.cursor-trail {
-  width: 40px; height: 40px;
-  border: 1px solid rgba(201, 168, 76, 0.4);
-  border-radius: 50%;
-  position: fixed; top: 0; left: 0;
-  pointer-events: none;
-  z-index: 9998;
-  transform: translate(-50%, -50%);
-  transition: transform 0.25s var(--ease), opacity 0.3s;
-}
+
 body:hover .cursor { opacity: 1; }
 a:hover ~ .cursor,
 button:hover ~ .cursor { transform: translate(-50%, -50%) scale(3); }
